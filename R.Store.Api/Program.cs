@@ -3,6 +3,9 @@ using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data;
+using Services;
+using Services.Abstractions;
+using AssemblyReference = Services.AssemblyReference;
 
 namespace R.Store.Api
 {
@@ -18,12 +21,17 @@ namespace R.Store.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+
             builder.Services.AddDbContext<StoreDbContext>( options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); 
             });
             builder.Services.AddScoped<IDbInitializer,DbInitializer>(); //Allow DI For DbInitializer
-           
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();   
+            builder.Services.AddScoped<IServiceManager,ServiceManager>();    
+            builder.Services.AddAutoMapper(typeof(AssemblyReference).Assembly);
+
 
            var app = builder.Build();
 

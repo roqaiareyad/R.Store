@@ -29,15 +29,20 @@ namespace Services
           var Product = await unitOfWork.GetRepository<Product , int>().GetAsync(Id);
             if (Product is null) return null;
            var result = mapper.Map<ProductResultDto>(Product);
+            return result;  
         }
-        public Task<IEnumerable<BrandResultDto>> GetAllBrandsAsync()
+        public async Task<IEnumerable<BrandResultDto>> GetAllBrandsAsync()
         {
-            throw new NotImplementedException();
+            var brands = await unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync();
+            var result = mapper.Map<IEnumerable<BrandResultDto>>(brands);
+            return result;
         }
 
-        public Task<IEnumerable<TypeResultDto>> GetAllTypesAsync()
+        public async Task<IEnumerable<TypeResultDto>> GetAllTypesAsync()
         {
-            throw new NotImplementedException();
+            var types = await unitOfWork.GetRepository<ProductType, int>().GetAllAsync();
+            var result = mapper.Map<IEnumerable<TypeResultDto>>(types);
+            return result;
         }
 
 
