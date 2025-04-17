@@ -7,29 +7,44 @@ using AutoMapper;
 using Domain.Contracts;
 using Domain.Models;
 using Services.Abstractions;
+using Services.Specifications;
 using Shared;
 
 namespace Services
 {
     public class ProductService(IUnitOfWork unitOfWork , IMapper mapper) : IProductService
     {
-        
 
-        public async Task<IEnumerable<ProductResultDto>> GetAllProductsAsync()
+
+        public async Task<PaginationResponse<ProductResultDto>> GetAllProductsAsync(ProductSpecificationsParameters SpecParam)
         {
+            var spec = new ProductWithBrandsAndTypesSpecifications(SpecParam);
+
+
+
             // Get All Product Through Product Repository
-            var Products = await unitOfWork.GetRepository<Product, int>().GetAllAsync();
+            var Products = await unitOfWork.GetRepository<Product, int>().GetAllAsync(spec);
+
             // Mapping IEnumerable <Product> To ProductResultDto : AutoMapper
             var result = mapper.Map<IEnumerable<ProductResultDto>>(Products);
-            return result;  
+
+            var specCount = new ProductWithCountSpecification(SpecParam);
+
+            var count = await unitOfWork.GetRepository<Product, int>().CountAsync(specCount);
+
+            return new PaginationResponse<ProductResultDto>(SpecParam.PageIndex, SpecParam.PageSize, count, result);
         }
 
-        public async Task<ProductResultDto> GetProductByIdAsync(int Id)
+        public async Task<ProductResultDto?> GetProductByIdAsync(int id)
         {
-          var Product = await unitOfWork.GetRepository<Product , int>().GetAsync(Id);
-            if (Product is null) return null;
-           var result = mapper.Map<ProductResultDto>(Product);
-            return result;  
+            //var product = await unitOfWork.GetRepository<Product, int>().GetAsync(id);
+
+            var spec = new ProductWithBrandsAndTypesSpecifications(id);
+            var product = await unitOfWork.GetRepository<Product, int>().GetAsync(spec);
+            if (product is null) return null;
+
+            var result = mapper.Map<ProductResultDto>(product);
+            return result;
         }
         public async Task<IEnumerable<BrandResultDto>> GetAllBrandsAsync()
         {

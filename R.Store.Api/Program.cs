@@ -49,10 +49,12 @@ namespace R.Store.Api
                 app.UseSwaggerUI();
             }
 
+           
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
+            app.UseStaticFiles();
 
             app.MapControllers();
 
