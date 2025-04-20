@@ -1,8 +1,10 @@
 
 using Domain.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data;
+using R.Store.Api.Middlewares;
 using Services;
 using Services.Abstractions;
 using AssemblyReference = Services.AssemblyReference;
@@ -31,6 +33,16 @@ namespace R.Store.Api
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();   
             builder.Services.AddScoped<IServiceManager,ServiceManager>();    
             builder.Services.AddAutoMapper(typeof(AssemblyReference).Assembly);
+            builder.Services.Configure<ApiBehaviorOptions>(config =>
+            {
+                config.InvalidModelStateResponseFactory = (actionContext) =>
+                {
+                    var response = 
+                    return new BadRequestObjectResult("");
+                };
+            });
+             
+            
 
 
            var app = builder.Build();
@@ -41,6 +53,7 @@ namespace R.Store.Api
             await dbInitializer.InitializeAsync();
             #endregion
 
+            app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
