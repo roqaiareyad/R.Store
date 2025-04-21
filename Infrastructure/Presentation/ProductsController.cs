@@ -1,53 +1,71 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Services.Abstractions;
+using ServicesAbstractions;
+using Shared;
+using Shared.ErrorsModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shared;
-using Microsoft.AspNetCore.Mvc;
-using Services.Abstractions;
 
 namespace Presentation
 {
     [ApiController]
-    [Route(template: "api /[controller]")]
+    [Route("api/[controller]")]
     public class ProductsController(IServiceManager serviceManager) : ControllerBase
     {
-        // endPoint : public non static method
+        // endpoint : public non sttic method
+        //sort default based on name 
 
-        [HttpGet] //endPoint : GET : /api/products
-        public async Task<IActionResult> GetAllProducts([FromQuery] ProductSpecificationsParameters SpecParam)
+
+        [HttpGet] //Get: /api/products
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResponse<ProductResultDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        public async Task<ActionResult<PaginationResponse<ProductResultDto>>> GetAllProducts([FromQuery] ProductSpecificationsParameters SpecParam)
         {
             var result = await serviceManager.ProductService.GetAllProductsAsync(SpecParam);
-
-            if (result is null) return BadRequest();//400
-            return Ok(result);  //200
-
+            return Ok(result);//return Status code 200
         }
 
 
-        [HttpGet ("{id}")] // GET : /api /products/12
-        public async Task<IActionResult> GetProductById(int id)
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductResultDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
+        public async Task<ActionResult<ProductResultDto>> GetProductsById(int id)
         {
-             var result = await serviceManager.ProductService.GetProductByIdAsync(id);
-            if (result is null) return NotFound(); //404
-            return Ok(result); //200
+            var res = await serviceManager.ProductService.GetProductByIdAsync(id);
+            //if(res is null) return BadRequest();
+            return Ok(res);
         }
 
-        [HttpGet("brands")]  //TODO :Get All Brands
-        public async Task<IActionResult> GetAllBrands()
+
+        [HttpGet("brands")] // GET : /api/products/brands
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BrandResultDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        public async Task<ActionResult<BrandResultDto>> GetAlBrands()
         {
-             var result = await serviceManager.ProductService.GetAllBrandsAsync();
-            if (result is null) return BadRequest();    
-            return Ok(result);  
+            var result = await serviceManager.ProductService.GetAllBrandsAsync();
+            if (result is null) return BadRequest();
+            return Ok(result);
         }
 
-        [HttpGet("types")]   //TODO :Get All Types
-        public async Task<IActionResult> GetAllTypes()
+
+        [HttpGet("types")] // GET : /api/products/types
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TypeResultDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        public async Task<ActionResult<TypeResultDto>> GetAllTypes()
         {
             var result = await serviceManager.ProductService.GetAllTypesAsync();
-            if (result is null) return BadRequest(); //400
-            return Ok(result);//200
+            if (result is null) return BadRequest();
+            return Ok(result);
         }
     }
 }

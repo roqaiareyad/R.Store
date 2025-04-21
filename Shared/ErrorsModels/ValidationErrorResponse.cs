@@ -10,7 +10,7 @@ namespace Shared.ErrorsModels
     public class ValidationErrorResponse
     {
         public int StatusCode { get; set; } = StatusCodes.Status400BadRequest;
-
-        public string ErrorMessage { get; set; } = "Validation Errors";
+        public string ErrorMessage { get; set; } = "validation Errors";
+        public IEnumerable<ValidationError> Errors { get; set; }
     }
 }
