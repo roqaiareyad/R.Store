@@ -22,14 +22,16 @@ namespace Persistence
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddScoped<IDbInitializer,DbIntializer>(); // Allow DI 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBasketRepository, BasketRepository>();
-            services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+            services.AddScoped<ICacheRepository, CacheRepository>();
+
+            services.AddSingleton<IConnectionMultiplexer>(
+                (serviceProvider) =>
             {
                 return ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")!);
             });
 
-
+            services.AddScoped<IUnitOfWork, UnitOfWork>(); 
             return services;
         }
     }

@@ -60,14 +60,14 @@ namespace R.Store.Api.Extensions
                     var errors = actionContext.ModelState.Where(m => m.Value.Errors.Any()).Select(
                         m => new ValidationError()
                         {
-                            Feild = m.Key,
+                            Field = m.Key,
                             Errors = m.Value.Errors.Select(error => error.ErrorMessage)
                         }
                         );
                     var response = new ValidationErrorResponse()
                     {
                         Errors = errors
-                    };
+                    }; 
                     return new BadRequestObjectResult(response);
                 };
             });

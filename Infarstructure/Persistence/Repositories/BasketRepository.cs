@@ -16,7 +16,7 @@ namespace Persistence.Repositories
 
 
         public async Task<CustomerBasket?> GetBasketAsync(string id)
-        {
+        { 
             var redisvalue = await _database.StringGetAsync(id);
             if (redisvalue.IsNullOrEmpty) return null;
             var basket = JsonSerializer.Deserialize<CustomerBasket>(redisvalue);
@@ -27,9 +27,8 @@ namespace Persistence.Repositories
         public async Task<CustomerBasket?> UpdateBasketAsync(CustomerBasket basket, TimeSpan? timeToLive = null)
         {
             var redisvalue = JsonSerializer.Serialize<CustomerBasket>(basket);
-            var flag = _database.StringSetAsync(basket.Id, redisvalue, TimeSpan.FromDays(30));
-            if (flag is null) return null;
-            return await GetBasketAsync(basket.Id);
+            var flag = await _database.StringSetAsync(basket.Id , redisvalue, TimeSpan.FromDays(30));
+          return flag ? await GetBasketAsync(basket.Id) : null;    
         }
 
         public async Task<bool> DeleteBasketAsync(string id)

@@ -9,7 +9,7 @@ namespace Shared.ErrorsModels
 
     public class ValidationError
     {
-        public string Feild { get; set; }
+        public string Field { get; set; }
         public IEnumerable<string> Errors { get; set; }
     }
 }
