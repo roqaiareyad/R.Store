@@ -2,8 +2,10 @@
 using Domain.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Persistence;
 using Persistence.Data;
+using Persistence.Identity;
 using R.Store.Api.Extensions;
 using R.Store.Api.Middlewares;
 using Services;
@@ -20,6 +22,7 @@ namespace R.Store.Api
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.RegisterAllServices(builder.Configuration);
+
 
             var app = builder.Build();
 

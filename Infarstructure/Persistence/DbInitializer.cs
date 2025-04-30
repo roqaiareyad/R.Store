@@ -77,5 +77,10 @@ namespace Persistence
                 }
             }
         }
+
+        public Task IntializeIdentityAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

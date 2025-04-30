@@ -16,11 +16,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Infarstructure\Persistence\Persistence.csproj" />
+    <ProjectReference Include="..\Infarstructure\Presentation\Presentation.csproj" />
     <ProjectReference Include="..\Infrastructure\Presentation\Presentation.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\images\products\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Presentation">
+      <HintPath>..\Infarstructure\Presentation\bin\Debug\net8.0\Presentation.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
