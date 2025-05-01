@@ -15,7 +15,7 @@ namespace Services.Specifications
         {
             ApplyInclude();
         }
-        public ProductWithBrandsAndTypesSpecifications(ProductSpecificationsParameters SpecParam) : base(
+        public ProductWithBrandsAndTypesSpecifications(ProductSpecificationsParamters SpecParam) : base(
             P =>
             (string.IsNullOrEmpty(SpecParam.Search) || P.Name.ToLower().Contains(SpecParam.Search.ToLower())) &&
             (!SpecParam.BrandId.HasValue || P.BrandId == SpecParam.BrandId) &&

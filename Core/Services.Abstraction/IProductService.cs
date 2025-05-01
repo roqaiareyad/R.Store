@@ -9,16 +9,22 @@ namespace Services.Abstractions
 {
     public interface IProductService
     {
-        // Get All Product
-        Task <PaginationResponse<ProductResultDto>>GetAllProductsAsync(ProductSpecificationsParameters SpecParam);
+        // Get All Products 
 
-        // Get Product By Id
-        Task<ProductResultDto> GetProductByIdAsync(int id);
+        //Task<IEnumerable<ProductResultDto>> GetAllProductsAsync(int? brandId,int?typeId,string? sort, int pageIndex = 1, int pageSize = 5);
+        Task<PaginationResponse<ProductResultDto>> GetAllProductsAsync(ProductSpecificationsParamters specParams);
 
-        // Get All Types
+        // Get Product By Id 
+
+        Task<ProductResultDto?> GetProductByIdAsync(int id);
+
+        // Get All Types 
+
         Task<IEnumerable<TypeResultDto>> GetAllTypesAsync();
 
-        // Get All Brands
+        // Get All Brands 
+
         Task<IEnumerable<BrandResultDto>> GetAllBrandsAsync();
+
     }
 }

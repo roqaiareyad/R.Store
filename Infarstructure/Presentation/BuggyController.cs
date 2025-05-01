@@ -8,49 +8,49 @@ using Microsoft.AspNetCore.Mvc;
 namespace Presentation
 {
     [ApiController]
-    [Route("api/[Controller]")]
+    [Route("api/[controller]")]
     public class BuggyController : ControllerBase
     {
-        [HttpGet("notfound")] //GET : api/ Buggy/notfound
+
+        [HttpGet("notfound")] // Get : /api/Buggy/notfound
         public IActionResult GetNotFoundRequest()
         {
-            //Code
-            return NotFound(); //400
-
+            // Code 
+            return NotFound(); // 404
         }
 
-        [HttpGet("severerror")] //GET : api/ Buggy/severerror
+
+        [HttpGet("servererror")] // Get : /api/Buggy/servererror
         public IActionResult GetServerErrorRequest()
         {
-
             throw new Exception();
             return Ok();
-
-
         }
 
-        [HttpGet(template: "badrequest")] //GET : api/ Buggy/badrequest
+
+        [HttpGet("badrequest")] // Get : /api/Buggy/badrequest
         public IActionResult GetBadRequest()
         {
-            //Code
-            return BadRequest(); //404
-
+            // Code 
+            return BadRequest();  // 400
         }
 
-        [HttpGet(template: "badrequest/{id}")] //GET : api/ Buggy/badrequest/2 
-        public IActionResult GetBadRequest(int id) // Validtion Error
+
+        [HttpGet("badrequest/{id}")] // Get : /api/Buggy/badrequest/id
+        public IActionResult GetBadRequest(int id) // Validation Error (el Mafrood a7oot Id w &atet Name masalan) 
         {
-            //Code
-            return BadRequest(); //404
-
+            // Code 
+            return BadRequest();  // 400
         }
 
-        [HttpGet(template: "unauthorized")] //GET : api/ Buggy/unauthorized 
-        public IActionResult GetUnauthorizedRequest(int id) // Validtion Error
+
+        [HttpGet("unauthorized")] // Get : /api/Buggy/unauthorized
+        public IActionResult GetUnauthorizedRequest() // Enter place Not Allow For Him
         {
-            //Code
-            return Unauthorized(); //401
-
+            // Code 
+            return Unauthorized();  // 400
         }
+
     }
+
 }

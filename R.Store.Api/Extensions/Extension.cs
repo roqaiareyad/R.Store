@@ -1,48 +1,89 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Persistence;
 using Services;
+using Shared.ErrorsModels;
+using Persistence;
 using Domain.Contracts;
 using R.Store.Api.Middlewares;
-using Shared.ErrorsModels;
-
+using Domain.Models.Identity;
+using Microsoft.AspNetCore.Identity;
+using Persistence.Data;
+using Persistence.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Shared;
+using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace R.Store.Api.Extensions
 {
+
     public static class Extension
     {
+
         public static IServiceCollection RegisterAllServices(this IServiceCollection services, IConfiguration configuration)
         {
-            // Add services to the container.
 
-            services.AddBuiltinServices();
+            services.AddBuiltInServices();
+
             services.AddSwaggerServices();
 
-
-
             services.AddInfrastructureServices(configuration);
-            services.AddApplicationServices();
 
-
+            services.AddApplicationServices(configuration);
+            services.AddIdentityServices();
 
             services.ConfigureServices();
-            // before build -> allow any service / add any service / allow dependecy injection
+            services.ConfigureJwtServices(configuration);
+
             return services;
         }
 
-        private static IServiceCollection AddBuiltinServices(this IServiceCollection services)
+        private static IServiceCollection AddBuiltInServices(this IServiceCollection services)
         {
-            // Add services to the container.
 
             services.AddControllers();
-
             return services;
         }
+
+        private static IServiceCollection ConfigureJwtServices(this IServiceCollection services, IConfiguration configuration)
+        {
+
+            var JwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
+
+                    ValidIssuer = JwtOptions.Issuer,
+                    ValidAudience = JwtOptions.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.SecretKey)),
+
+                };
+
+            });
+            return services;
+        }
+
+        private static IServiceCollection AddIdentityServices(this IServiceCollection services)
+        {
+
+            services.AddIdentity<AppUser, IdentityRole>()
+                    .AddEntityFrameworkStores<StoreIdentityDbContext>();
+            return services;
+        }
+
 
         private static IServiceCollection AddSwaggerServices(this IServiceCollection services)
         {
-            // Add services to the container.
-
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             return services;
@@ -50,41 +91,39 @@ namespace R.Store.Api.Extensions
 
         private static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
-            // Add services to the container.
 
-            // validation error only
             services.Configure<ApiBehaviorOptions>(config =>
             {
-                config.InvalidModelStateResponseFactory = (actionContext) =>
+                config.InvalidModelStateResponseFactory = (ActionContext) =>
                 {
-                    var errors = actionContext.ModelState.Where(m => m.Value.Errors.Any()).Select(
-                        m => new ValidationError()
-                        {
-                            Field = m.Key,
-                            Errors = m.Value.Errors.Select(error => error.ErrorMessage)
-                        }
-                        );
+                    var errrors = ActionContext.ModelState.Where(m => m.Value.Errors.Any())
+                                    .Select(m => new ValidationError()
+                                    {
+                                        Field = m.Key,
+                                        Errors = m.Value.Errors.Select(errors => errors.ErrorMessage)
+                                    });
+
                     var response = new ValidationErrorResponse()
                     {
-                        Errors = errors
-                    }; 
+                        Errors = errrors
+                    };
+
                     return new BadRequestObjectResult(response);
                 };
             });
+
+
+
             return services;
         }
 
-
-
-
-
-        public static async Task<WebApplication> ConfigureMiddleWares(this WebApplication app)
+        public static async Task<WebApplication> ConfigureMiddlewares(this WebApplication app)
         {
-            #region Seeding
-            app.IntializeDatabaseAsync();
-            #endregion
+
+            await app.InitializeDatabaseAsync();
 
             app.UseGlobalErrorHandling();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -93,35 +132,44 @@ namespace R.Store.Api.Extensions
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
 
-            app.UseAuthorization();
             app.UseStaticFiles();
 
+            app.UseHttpsRedirection();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
             app.MapControllers();
+
             return app;
         }
 
-
-        private static async Task<WebApplication> IntializeDatabaseAsync(this WebApplication app)
+        private static async Task<WebApplication> InitializeDatabaseAsync(this WebApplication app)
         {
-            #region Seeding
+
+            #region Data Seeding
+
             using var scope = app.Services.CreateScope();
-            var dbIntializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();// Allow CR Create Object from DbIntializer
-            await dbIntializer.IntializeAsync();
+
+            var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>(); // Allow CLR To Make Object From DbInitializer
+
+            await dbInitializer.InitializeAsync();
+            await dbInitializer.InitializeIdentityAsync();
+
             #endregion
 
             return app;
         }
 
-
         private static WebApplication UseGlobalErrorHandling(this WebApplication app)
         {
+
             app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
             return app;
         }
-
 
     }
 }

@@ -28,7 +28,7 @@ namespace R.Store.Api
 
             // after build configure any middleware
 
-            await app.ConfigureMiddleWares();
+            await app.ConfigureMiddlewares();
 
             app.Run();
         }

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    public class ValidationException(IEnumerable<string> errors) : Exception("Validation Errors")
+
+    public class UnAuthorizedException(string message = "Invalid Email Or Password") : Exception(message)
     {
-        public IEnumerable<string> Errors { get; } = errors;
+
     }
 }

@@ -10,7 +10,7 @@ namespace Services.Specifications
 {
     public class ProductWithCountSpecification : BaseSpecifications<Product, int>
     {
-        public ProductWithCountSpecification(ProductSpecificationsParameters SpecParam) : base(
+        public ProductWithCountSpecification(ProductSpecificationsParamters SpecParam) : base(
             P =>
             (string.IsNullOrEmpty(SpecParam.Search) || P.Name.ToLower().Contains(SpecParam.Search.ToLower())) &&
             (!SpecParam.BrandId.HasValue || P.BrandId == SpecParam.BrandId) &&

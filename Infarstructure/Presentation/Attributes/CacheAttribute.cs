@@ -11,33 +11,37 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Presentation.Attributes
 {
-    public class CacheAttribute(int durationInSecond) : Attribute, IAsyncActionFilter
+    public class CacheAttribute(int durationInSec) : Attribute, IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var cacheService = context.HttpContext.RequestServices.GetRequiredService<IServiceManager>().cacheService;
+            var CacheService = context.HttpContext.RequestServices.GetRequiredService<IServiceManager>().cacheService;
 
             var cacheKey = GenerateCacheKey(context.HttpContext.Request);
 
-            var result = await cacheService.GetCacheValueAsync(cacheKey);
-            if (!string.IsNullOrEmpty(result)) // if there is cache
+            var result = await CacheService.GetCacheValueAsync(cacheKey);
+
+            if (!string.IsNullOrEmpty(result))
             {
-                // Return Response
+                // Return Responsive
                 context.Result = new ContentResult()
                 {
                     ContentType = "application/json",
                     StatusCode = StatusCodes.Status200OK,
                     Content = result
                 };
+
                 return;
             }
-            // else Execute endpoint 
+
+            // Execute The End Point 
             var contextResult = await next.Invoke();
             if (contextResult.Result is OkObjectResult okObject)
             {
-                await cacheService.SetCacheValueAsync(cacheKey, okObject.Value, TimeSpan.FromSeconds(durationInSecond));
+                await CacheService.SetCacheValueAsync(cacheKey, okObject.Value, TimeSpan.FromSeconds(durationInSec));
             }
         }
+
 
 
         private string GenerateCacheKey(HttpRequest request)
@@ -48,8 +52,13 @@ namespace Presentation.Attributes
             {
                 key.Append($"|{item.Key}-{item.Value}");
             }
-            //api/products|typeid-1|sort-pricedesc
+
+            // /api/Products?brandId=1&typeId=1
+            // /api/Products|brandId-1|typeId-1
+
             return key.ToString();
+
         }
+
     }
 }

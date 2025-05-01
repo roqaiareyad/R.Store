@@ -17,7 +17,7 @@ namespace Services
     {
 
 
-        public async Task<PaginationResponse<ProductResultDto>> GetAllProductsAsync(ProductSpecificationsParameters SpecParam)
+        public async Task<PaginationResponse<ProductResultDto>> GetAllProductsAsync(ProductSpecificationsParamters SpecParam)
         {
             var spec = new ProductWithBrandsAndTypesSpecifications(SpecParam);
 

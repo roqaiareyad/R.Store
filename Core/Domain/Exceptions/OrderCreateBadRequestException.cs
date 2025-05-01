@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    public class ValidationException(IEnumerable<string> errors) : Exception("Validation Errors")
+    public class OrderCreateBadRequestException() : BadRequestException("Invalid Operation When Create Order !!")
     {
-        public IEnumerable<string> Errors { get; } = errors;
     }
 }

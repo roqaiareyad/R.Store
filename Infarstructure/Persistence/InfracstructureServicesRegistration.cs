@@ -33,7 +33,7 @@ namespace Persistence
 
             services.AddIdentityCore<AppUser>()
                 .AddEntityFrameworkStores<StoreIdentityDbContext>();
-            services.AddScoped<IDbInitializer, DbIntializer>(); // Allow DI 
+            services.AddScoped<IDbInitializer,DbInitializer>(); // Allow DI 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddScoped<ICacheRepository, CacheRepository>();

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Domain.Contracts
 {
-    public interface IDbInitializer
+    public interface IDbInitializer  // Migration , Update Db , Data Seeding ( 2y 7aga Na2sa Ht3mlha)
     {
-        Task IntializeAsync();
-        Task IntializeIdentityAsync();
-    
+        Task InitializeAsync();
+        Task InitializeIdentityAsync();
+
     }
 }

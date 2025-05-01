@@ -15,6 +15,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Services.Abstractions;
+using System.ComponentModel.DataAnnotations;
+using ValidationException = Domain.Exceptions.ValidationException;
 
 namespace Services
 {

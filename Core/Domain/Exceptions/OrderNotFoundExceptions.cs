@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    public class ValidationException(IEnumerable<string> errors) : Exception("Validation Errors")
+    public class OrderNotFoundExceptions(Guid id) : NotFoundException($"Order With Id {id} Not Found !!")
     {
-        public IEnumerable<string> Errors { get; } = errors;
     }
 }

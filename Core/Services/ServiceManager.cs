@@ -27,7 +27,7 @@ namespace Services
 
         public IBasketService basketService { get; } = new BasketService(basketRepository, mapper);
 
-        public ICacheService CacheService { get; } = new CacheService(cacheRepository);
+        public ICacheService cacheService { get; } = new CacheService(cacheRepository);
 
         public IAuthService AuthService { get; } = new AuthService(userManager, options);
 
