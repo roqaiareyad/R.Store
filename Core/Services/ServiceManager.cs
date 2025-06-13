@@ -21,17 +21,19 @@ namespace Services
         IUnitOfWork unitOfWork,
         UserManager<AppUser> userManager,
         IOptions<JwtOptions> options,
-        IMapper mapper) : IServiceManager
+        IMapper mapper,
+        IConfiguration configuration) : IServiceManager
     {
         public IProductService ProductService { get; } = new ProductService(unitOfWork, mapper);
 
         public IBasketService basketService { get; } = new BasketService(basketRepository, mapper);
 
-        public ICacheService cacheService { get; } = new CacheService(cacheRepository);
+        public ICacheService CacheService { get; } = new CacheService(cacheRepository);
 
-        public IAuthService AuthService { get; } = new AuthService(userManager, options);
+        public IAuthService AuthService { get; } = new AuthService(mapper, userManager, options);
 
         public IOrderService OrderService { get; } = new OrderService(mapper, unitOfWork, basketRepository);
 
+        //public IPaymentService PaymentService { get; } = new PaymentsService(basketRepository, unitOfWork, mapper, configuration);
     }
 }

@@ -22,7 +22,6 @@ namespace R.Store.Api.Extensions
 
         public static IServiceCollection RegisterAllServices(this IServiceCollection services, IConfiguration configuration)
         {
-
             services.AddBuiltInServices();
 
             services.AddSwaggerServices();
@@ -30,10 +29,15 @@ namespace R.Store.Api.Extensions
             services.AddInfrastructureServices(configuration);
 
             services.AddApplicationServices(configuration);
+
             services.AddIdentityServices();
 
             services.ConfigureServices();
+
             services.ConfigureJwtServices(configuration);
+
+          
+            services.AddAutoMapper(typeof(MappingProfile)); 
 
             return services;
         }
@@ -75,9 +79,6 @@ namespace R.Store.Api.Extensions
 
         private static IServiceCollection AddIdentityServices(this IServiceCollection services)
         {
-
-            services.AddIdentity<AppUser, IdentityRole>()
-                    .AddEntityFrameworkStores<StoreIdentityDbContext>();
             return services;
         }
 

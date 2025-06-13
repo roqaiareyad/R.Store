@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using ServicesAbstractions;
 
 namespace Presentation.Attributes
 {
@@ -15,7 +16,7 @@ namespace Presentation.Attributes
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var CacheService = context.HttpContext.RequestServices.GetRequiredService<IServiceManager>().cacheService;
+            var CacheService = context.HttpContext.RequestServices.GetRequiredService<IServiceManager>().CacheService;
 
             var cacheKey = GenerateCacheKey(context.HttpContext.Request);
 
