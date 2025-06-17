@@ -17,19 +17,15 @@ namespace Presentation
     [Route("api/[controller]")]
     public class AuthController(IServiceManager serviceManager) : ControllerBase
     {
-        // Login 
-
-        [HttpPost("login")] // POST : api/auth/login
-        public async Task<IActionResult> Login(LoginDto loginDto)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             var result = await serviceManager.AuthService.LoginAsync(loginDto);
             return Ok(result);
         }
 
-        // Register 
-
-        [HttpPost("register")] // POST : api/auth/register
-        public async Task<IActionResult> Register(RegisterDto registerDto)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             var result = await serviceManager.AuthService.RegisterAsync(registerDto);
             return Ok(result);
@@ -62,15 +58,13 @@ namespace Presentation
             return Ok(result);
         }
 
-
-        [HttpPut("Address")]  // Put : api/auth/Address
+        [HttpPut("Address")]
         [Authorize]
-        public async Task<IActionResult> UpdateCurrentUser(AddressDto address)
+        public async Task<IActionResult> UpdateCurrentUser([FromBody] AddressDto address)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             var result = await serviceManager.AuthService.UpdateCurrentUserAddressAsync(address, email);
             return Ok(result);
         }
-
     }
 }

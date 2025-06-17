@@ -13,10 +13,5 @@ namespace Shared.ErrorsModels
         public string ErrorMessage { get; set; } = "validation Errors";
         public IEnumerable<ValidationError> Errors { get; set; } = [];
 
-        //public  class ValidationError
-        //{
-        //    public string Field { get; set; } = default !;
-        //    public IEnumerable<string> Errors { get; set; } = [];
-        //}
     }
 }

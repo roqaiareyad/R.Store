@@ -34,6 +34,6 @@ namespace Services
 
         public IOrderService OrderService { get; } = new OrderService(mapper, unitOfWork, basketRepository);
 
-        //public IPaymentService PaymentService { get; } = new PaymentsService(basketRepository, unitOfWork, mapper, configuration);
+        public IPaymentService PaymentService { get; } = new PaymentsService(basketRepository, unitOfWork, mapper, configuration);
     }
 }

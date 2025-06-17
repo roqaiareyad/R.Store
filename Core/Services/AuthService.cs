@@ -46,19 +46,19 @@ namespace Services
 
         public async Task<UserResultDto> RegisterAsync(RegisterDto registerDto)
         {
+            // ✅ في حالة أن الفرونت مش بيرسل UserName
+            if (string.IsNullOrWhiteSpace(registerDto.UserName))
+                registerDto.UserName = registerDto.Email;
 
-            // Duplicated Email :
-
+            // 🔁 تحقق من التكرار
             if (await CheckEmailExistsAsync(registerDto.Email))
-            {
                 throw new DuplicatedEmailBadRequestException(registerDto.Email);
-            }
 
             var user = new AppUser()
             {
                 DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
-                UserName = registerDto.UserName,
+                UserName = registerDto.UserName ?? registerDto.Email.Split('@')[0], // 👈 عالج نقص الـ UserName هنا
                 PhoneNumber = registerDto.PhoneNumber,
             };
 
@@ -76,8 +76,8 @@ namespace Services
                 Email = user.Email,
                 Token = await GenerateJwtTokenAsync(user),
             };
-
         }
+
 
 
         public async Task<bool> CheckEmailExistsAsync(string email)

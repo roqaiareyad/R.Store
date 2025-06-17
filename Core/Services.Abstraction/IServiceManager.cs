@@ -14,7 +14,7 @@ namespace ServicesAbstractions
         ICacheService CacheService { get; }
         IAuthService AuthService { get; }
         IOrderService OrderService { get; }
-        //IPaymentService PaymentService { get; }
+        IPaymentService PaymentService { get; }
 
     }
 }

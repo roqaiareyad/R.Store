@@ -50,9 +50,16 @@ namespace Services
 
             // TODO :: Create Payment Intent Id 
 
+            var spec = new OrderWithPaymentIntentSpecifications(basket.PaymentIntentId);
+
+            var existsOrder = await unitOfWork.GetRepository<Order, Guid>().GetAsync(spec);
+
+            if (existsOrder is not null)
+                unitOfWork.GetRepository<Order, Guid>().Delete(existsOrder);
+
             // Create Order 
 
-            var order = new Order(userEmail, address, OrderItems, deliveryMethod, subTotal, "");
+            var order = new Order(userEmail, address, OrderItems, deliveryMethod, subTotal, basket.PaymentIntentId);
 
             await unitOfWork.GetRepository<Order, Guid>().AddAsync(order);
 
