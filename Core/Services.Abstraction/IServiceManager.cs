@@ -10,7 +10,7 @@ namespace ServicesAbstractions
     public interface IServiceManager
     {
         IProductService ProductService { get; }
-        IBasketService basketService { get; }
+        IBasketService BasketService { get; }
         ICacheService CacheService { get; }
         IAuthService AuthService { get; }
         IOrderService OrderService { get; }

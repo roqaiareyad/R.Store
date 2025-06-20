@@ -1,24 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServicesAbstractions;
 
-namespace Presentation
+[ApiController]
+[Route("api/payments")]
+public class PaymentsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class PaymentsController(IServiceManager serviceManager) : ControllerBase
+    private readonly IServiceManager _serviceManager;
+
+    public PaymentsController(IServiceManager serviceManager)
     {
-        [HttpPost("{basketId}")]
-        [Authorize]
-        public async Task<IActionResult> CreateOrUpdatePaymentIntent(string basketId)
-        {
-            var result = await serviceManager.PaymentService.CreateOrUpdatePaymentIntentAsync(basketId);
-            return Ok(result);
-        }
+        _serviceManager = serviceManager;
     }
-} 
+
+    [HttpPost("{basketId}")]
+    [Authorize]
+    public async Task<IActionResult> CreateOrUpdatePaymentIntent(string basketId)
+    {
+        var result = await _serviceManager.PaymentService.CreateOrUpdatePaymentIntentAsync(basketId);
+        return Ok(result);
+    }
+}

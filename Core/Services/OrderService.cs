@@ -30,12 +30,18 @@ namespace Services
             if (basket == null) throw new BasketNotFoundException(orderRequest.BasketId);
 
             var OrderItems = new List<OrderItem>();
-
             foreach (var item in basket.Items)
             {
-                var product = await unitOfWork.GetRepository<Product, int>().GetAsync(item.Id);
-                if (product is null) throw new ProductNotFoundExceptions(item.Id);
-                var orderItem = new OrderItem(new ProductInOrderItem(product.Id, product.Name, product.PictureUrl), item.Quantity, product.Price);
+                var product = await unitOfWork.GetRepository<Product, int>().GetAsync(item.ProductId);
+
+                if (product is null) throw new ProductNotFoundExceptions(item.ProductId);
+
+                var orderItem = new OrderItem(
+                    new ProductInOrderItem(product.Id, product.Name, product.PictureUrl),
+                    item.Quantity,
+                    product.Price
+                );
+
                 OrderItems.Add(orderItem);
             }
 

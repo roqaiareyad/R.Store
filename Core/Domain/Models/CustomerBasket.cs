@@ -11,7 +11,8 @@ namespace Domain.Models
 
         public string Id { get; set; }
 
-        public IEnumerable<BasketItem> Items { get; set; }
+        public List<BasketItem> Items { get; set; } = new();
+
 
         public string? ClientSecret { get; set; }
 
